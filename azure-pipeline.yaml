@@ -37,7 +37,7 @@ steps:
 
       echo
       echo "🎯 Target version for traffic routing："
-      kubectl describe svc nginx-bg-svc | grep Selector
+      kubectl describe svc nginx-blue-green-svc | grep Selector
 
     displayName: "Helm blue-green deployment"
     workingDirectory: $(Build.SourcesDirectory)
