@@ -20,6 +20,7 @@ variables:
 steps:
   - checkout: self
   - script: |
+      az aks get-credentials --resource-group rg-aks-demo --name aks-demo --overwrite-existing
       VERSION=${{ parameters.releaseVersion }}
       echo "====================================="
       echo " Target release version：$VERSION"
