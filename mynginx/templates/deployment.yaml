@@ -1,0 +1,61 @@
+# blue Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-blue
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: nginx
+        version: blue
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.23-alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: index
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+      volumes:
+      - name: index
+        configMap:
+          name: nginx-index-blue
+---
+# green Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-green
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+      version: green
+  template:
+    metadata:
+      labels:
+        app: nginx
+        version: green
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.25-alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: index
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+      volumes:
+      - name: index
+        configMap:
+          name: nginx-index-green

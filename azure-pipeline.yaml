@@ -1,0 +1,46 @@
+trigger:
+  - none
+
+pool:
+  name: "default"
+
+parameters:
+- name: releaseVersion
+  displayName: "Choose the version to release"
+  type: string
+  default: blue
+  values:
+    - blue
+    - green
+
+variables:
+  HELM_RELEASE_NAME: "nginx-bg"
+  HELM_CHART_PATH: "./mynginx"
+
+steps:
+  - checkout: self
+  - script: |
+      VERSION=${{ parameters.releaseVersion }}
+      echo "====================================="
+      echo " Target release version：$VERSION"
+      echo "====================================="
+
+      if helm status ${HELM_RELEASE_NAME} >/dev/null 2>&1; then
+        echo "✅ upgrade: switch to $VERSION version"
+        helm upgrade ${HELM_RELEASE_NAME} ${HELM_CHART_PATH} \
+          --set active=${VERSION}
+      else
+        echo "✅ new installation: using $VERSION version"
+        helm install ${HELM_RELEASE_NAME} ${HELM_CHART_PATH} \
+          --set active=${VERSION}
+      fi
+
+      echo
+      echo "🎯 Target version for traffic routing："
+      kubectl describe svc nginx-bg-svc | grep Selector
+
+    displayName: "Helm blue-green deployment"
+    workingDirectory: $(Build.SourcesDirectory)
+    env:
+      HELM_RELEASE_NAME: $(HELM_RELEASE_NAME)
+      HELM_CHART_PATH: $(HELM_CHART_PATH)

@@ -1,0 +1,18 @@
+active: blue
+
+blue:
+  name: nginx-blue
+  image: nginx:1.23-alpine
+  replicaCount: 2
+  versionName: "Blue Version (v1.23)"
+
+green:
+  name: nginx-green
+  image: nginx:1.25-alpine
+  replicaCount: 2
+  versionName: "Green Version (v1.25)"
+
+service:
+  type: NodePort
+  port: 80
+  nodePort: 30080 
