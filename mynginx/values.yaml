@@ -15,4 +15,8 @@ green:
 service:
   type: NodePort
   port: 80
-  nodePort: 30080 
+  nodePort: 30080
+
+ingress:
+  enabled: true
+  host: myapp.local
